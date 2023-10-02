@@ -5,7 +5,7 @@ import CheckoutForm from "./checkoutForm";
 import {loadStripe} from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  "pk_test_51LXSmjAaD16bXEq9Te7kHHAv79uPT1Cjb6sVFiodePNjSxHzNDfbg2okXVK4A6jew6zdfQTLMMbuzqcLDW7kSEYD0054yVgemi"
 );
 
 export default function Payment(props: any) {

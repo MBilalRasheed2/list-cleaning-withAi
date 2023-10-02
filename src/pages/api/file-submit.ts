@@ -3,7 +3,7 @@ const csvParser = require("csv-parser");
 const redis = require("redis");
 const multer = require("multer");
 const converter = require("json-2-csv");
-const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
+const stripe = require("stripe")("sk_test_51LXSmjAaD16bXEq90LqBZjoRKfVek7KoxSc1VpkMn5IGN7jyKqLOEX5LQqKkcJoBq4jSDlP7w940bGQk99a4MbAd00pU3U0q9h");
 import type {NextApiRequest, NextApiResponse} from "next";
 import fs from "fs";
 import formidable, {File, IncomingForm} from "formidable";
@@ -13,12 +13,12 @@ const {Configuration, OpenAIApi} = require("openai");
 const today = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
 
 import {promisify} from "util";
-const NEXT_PUBLIC_REDIS_HOST = process.env.NEXT_PUBLIC_REDIS_HOST;
-// Create a Redis client
-const redisClient = redis.createClient({
-  host: NEXT_PUBLIC_REDIS_HOST,
-  port: 6379,
-});
+// const NEXT_PUBLIC_REDIS_HOST = process.env.NEXT_PUBLIC_REDIS_HOST;
+// // Create a Redis client
+// const redisClient = redis.createClient({
+//   host: NEXT_PUBLIC_REDIS_HOST,
+//   port: 6379,
+// });
 
 // Promisify Redis set and del functions
 // const asyncRedisSet = promisify(redisClient.set).bind(redisClient);
@@ -43,14 +43,14 @@ export default async function handler(
   ];
 
   // Create a Resend instance using an access token
-  const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_ACCESS_TOKEN);
+  const resend = new Resend("re_LGQe23Vp_MuhqpgXAwus6qs33txP3pEDg");
 
   // Create a Bull Queue for processing CSV data
   const csvQueue = new Queue("csvProcessing",);
 
   // Create an OpenAI configuration and API instance
   const configuration = new Configuration({
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
+    "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"
   });
   const openai = new OpenAIApi(configuration);
 
