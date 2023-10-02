@@ -1,0 +1,36 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        run: |
+          git config --global user.name ${{ secrets.GITHUB_ACTOR }}
+          git config --global user.email ${{ secrets.GITHUB_ACTOR }}@users.noreply.github.com
+          touch out/.nojekyll
+          git init
+          git add -A
+          git commit -m "Deploy to GitHub Pages"
+          git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git master:gh-pages
+

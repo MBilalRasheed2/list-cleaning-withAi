@@ -129,10 +129,8 @@ export default async function handler(
   // }
 
   // Process CSV data in the Bull Queue
-
-  const handleJOb = (data:any) =>{
-    console.log("handleJOb", data)
-    const {email, paymentIntentId, path, name} = data;
+  csvQueue.process(async (job: any) => {
+    const {email, paymentIntentId, path, name} = job.data;
     fs.createReadStream(path)
       .pipe(csvParser())
       .on("data", (data: any) => {
@@ -162,7 +160,6 @@ export default async function handler(
           } else {
             const attachmentPath = filePath;
             const attachmentContent = fs.readFileSync(attachmentPath);
-            console.log("attachmentContent=============>", attachmentContent)
 
             // Send an email with the cleaned CSV file as an attachment
             try {
@@ -186,8 +183,6 @@ export default async function handler(
                     value: "send_file",
                   },
                 ],
-              }).then(()=>{
-                console.log("email=============>", "email sent")
               });
             } catch (error) {
               // Function to issue a refund
@@ -255,7 +250,7 @@ export default async function handler(
       .on("error", (error: Error) => {
         res.status(500).json({error: "Error processing the CSV file!"});
       });
-  }
+  });
   // Handle POST requests
   if (req.method === "POST") {
     // Parse the form data using the formidable library
@@ -282,13 +277,12 @@ export default async function handler(
 
       // Add a job to the Bull Queue for CSV processing
       const {email, paymentIntentId, name} = fData.fields;
-      handleJOb({ path: filePath,
+      csvQueue.add({
+        path: filePath,
         email: email[0],
         paymentIntentId: paymentIntentId[0],
-        name: name[0],})
-      // csvQueue.add({
-       
-      // });
+        name: name[0],
+      });
     } catch (error) {
       console.error("Error reading file:", error);
     }
