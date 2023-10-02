@@ -160,6 +160,7 @@ export default async function handler(
           } else {
             const attachmentPath = filePath;
             const attachmentContent = fs.readFileSync(attachmentPath);
+            console.log("attachmentContent=============>", attachmentContent)
 
             // Send an email with the cleaned CSV file as an attachment
             try {
@@ -170,7 +171,7 @@ export default async function handler(
                 html: "Below is cleaned list file",
                 attachments: [
                   {
-                    filename: "cleanedFile111.csv",
+                    filename: "cleanedFile.csv",
                     content: attachmentContent,
                   },
                 ],
@@ -183,9 +184,10 @@ export default async function handler(
                     value: "send_file",
                   },
                 ],
+              }).then(()=>{
+                console.log("email=============>", "email sent")
               });
             } catch (error) {
-              console.log(error)
               // Function to issue a refund
               // issueRefund(paymentIntentId)
               //   .then((refund) => {
