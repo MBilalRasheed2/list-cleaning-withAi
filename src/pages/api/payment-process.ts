@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-const stripe = require("stripe")("re_LGQe23Vp_MuhqpgXAwus6qs33txP3pEDg");
+const stripe = require("stripe")("sk_test_51LXSmjAaD16bXEq90LqBZjoRKfVek7KoxSc1VpkMn5IGN7jyKqLOEX5LQqKkcJoBq4jSDlP7w940bGQk99a4MbAd00pU3U0q9h");
 
 export default async function handler(
   req: NextApiRequest,
