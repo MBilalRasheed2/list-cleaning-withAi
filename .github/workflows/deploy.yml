@@ -33,6 +33,9 @@ jobs:
           git --work-tree out/ commit -m "GitHub Pages Deployment"
           git push origin HEAD:gh-pages --force
         env:
-          NEXT_PUBLIC_MY_ENV_VAR: ${{ secrets.MY_ENV_VAR }}
+          echo "NEXT_PUBLIC_OPENAI_KEY=${{ secrets.NEXT_PUBLIC_OPENAI_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_RESEND_ACCESS_TOKEN=re_LGQe23Vp_MuhqpgXAwus6qs33txP3pEDg" >> .env.local
+          echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_STRIPE_SECRET_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_SECRET_KEY }}" >> .env.local
         if: success()
 
