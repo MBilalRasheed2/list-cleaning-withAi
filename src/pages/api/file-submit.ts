@@ -129,8 +129,9 @@ export default async function handler(
   // }
 
   // Process CSV data in the Bull Queue
-  csvQueue.process(async (job: any) => {
-    const {email, paymentIntentId, path, name} = job.data;
+
+  const handleJOb = (data:any) =>{
+    const {email, paymentIntentId, path, name} = data;
     fs.createReadStream(path)
       .pipe(csvParser())
       .on("data", (data: any) => {
@@ -253,8 +254,7 @@ export default async function handler(
       .on("error", (error: Error) => {
         res.status(500).json({error: "Error processing the CSV file!"});
       });
-  });
-
+  }
   // Handle POST requests
   if (req.method === "POST") {
     // Parse the form data using the formidable library
@@ -281,12 +281,13 @@ export default async function handler(
 
       // Add a job to the Bull Queue for CSV processing
       const {email, paymentIntentId, name} = fData.fields;
-      csvQueue.add({
-        path: filePath,
+      handleJOb({ path: filePath,
         email: email[0],
         paymentIntentId: paymentIntentId[0],
-        name: name[0],
-      });
+        name: name[0],})
+      // csvQueue.add({
+       
+      // });
     } catch (error) {
       console.error("Error reading file:", error);
     }
