@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 14
 
-      - name: Install dependencies 
+      - name: Install dependencies
         run: npm install
 
       - name: Build
@@ -35,7 +35,7 @@ jobs:
           echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}" >> .env.local
           echo "NEXT_PUBLIC_STRIPE_SECRET_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_SECRET_KEY }}" >> .env.local
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         run: |
           git config --global user.name ${{ secrets.GITHUB_ACTOR }}
           git config --global user.email ${{ secrets.GITHUB_ACTOR }}@users.noreply.github.com
