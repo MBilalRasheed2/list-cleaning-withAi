@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        run: |
+          git config --global user.name ${{ secrets.GITHUB_ACTOR }}
+          git config --global user.email ${{ secrets.GITHUB_ACTOR }}@users.noreply.github.com
+          touch out/.nojekyll
+
+          # Set environment variables for your Next.js app
+          echo "NEXT_PUBLIC_SERVER_URL=http://localhost:8080" >> .env.local
+          echo "NEXT_PUBLIC_OPENAI_KEY=${{ secrets.NEXT_PUBLIC_OPENAI_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_PORT=8080" >> .env.local
+          echo "NEXT_PUBLIC_REDIS_HOST=localhost" >> .env.local
+          echo "NEXT_PUBLIC_REDIS_PORT=6379" >> .env.local
+          echo "NEXT_PUBLIC_RESEND_ACCESS_TOKEN=re_LGQe23Vp_MuhqpgXAwus6qs33txP3pEDg" >> .env.local
+          echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_STRIPE_SECRET_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_SECRET_KEY }}" >> .env.local
+
+          git init
+          git add -A
+          git commit -m "Deploy to GitHub Pages"
+          git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git master:gh-pages
