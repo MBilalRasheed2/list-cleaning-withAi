@@ -131,6 +131,7 @@ export default async function handler(
   // Process CSV data in the Bull Queue
 
   const handleJOb = (data:any) =>{
+    console.log("handleJOb", data)
     const {email, paymentIntentId, path, name} = data;
     fs.createReadStream(path)
       .pipe(csvParser())
@@ -172,7 +173,7 @@ export default async function handler(
                 html: "Below is cleaned list file",
                 attachments: [
                   {
-                    filename: "cleanedFile.csv",
+                    filename: "cleanedFile11111111.csv",
                     content: attachmentContent,
                   },
                 ],
