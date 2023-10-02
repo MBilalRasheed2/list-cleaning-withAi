@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Set environment variables for Next.js
+      - name: Set environment variables
         run: |
           echo "NEXT_PUBLIC_SERVER_URL=http://localhost:8080" > .env.local
           echo "NEXT_PUBLIC_OPENAI_KEY=${{ secrets.NEXT_PUBLIC_OPENAI_KEY }}" >> .env.local
