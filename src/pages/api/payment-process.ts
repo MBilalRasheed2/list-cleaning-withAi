@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
+const stripe = require("stripe")("re_LGQe23Vp_MuhqpgXAwus6qs33txP3pEDg");
 
 export default async function handler(
   req: NextApiRequest,
