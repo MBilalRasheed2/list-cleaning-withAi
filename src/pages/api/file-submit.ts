@@ -170,7 +170,7 @@ export default async function handler(
                 html: "Below is cleaned list file",
                 attachments: [
                   {
-                    filename: "cleanedFile.csv",
+                    filename: "cleanedFile111.csv",
                     content: attachmentContent,
                   },
                 ],
@@ -185,6 +185,7 @@ export default async function handler(
                 ],
               });
             } catch (error) {
+              console.log(error)
               // Function to issue a refund
               // issueRefund(paymentIntentId)
               //   .then((refund) => {
