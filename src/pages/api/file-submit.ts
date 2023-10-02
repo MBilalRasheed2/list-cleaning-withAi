@@ -49,9 +49,7 @@ export default async function handler(
   const csvQueue = new Queue("csvProcessing",);
 
   // Create an OpenAI configuration and API instance
-  const configuration = new Configuration({
-    "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"
-  });
+  const configuration = new Configuration("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");
   const openai = new OpenAIApi(configuration);
 
   // Define a function to clean company names using OpenAI
