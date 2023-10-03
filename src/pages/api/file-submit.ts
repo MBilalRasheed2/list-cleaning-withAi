@@ -3,7 +3,7 @@ const csvParser = require("csv-parser");
 const redis = require("redis");
 const multer = require("multer");
 const converter = require("json-2-csv");
-const stripe = require("stripe")("sk_test_51LXSmjAaD16bXEq90LqBZjoRKfVek7KoxSc1VpkMn5IGN7jyKqLOEX5LQqKkcJoBq4jSDlP7w940bGQk99a4MbAd00pU3U0q9h");
+const stripe = require("stripe")("pk_test_51LXSmjAaD16bXEq9Te7kHHAv79uPT1Cjb6sVFiodePNjSxHzNDfbg2okXVK4A6jew6zdfQTLMMbuzqcLDW7kSEYD0054yVgemi");
 import type {NextApiRequest, NextApiResponse} from "next";
 import fs from "fs";
 import formidable, {File, IncomingForm} from "formidable";
@@ -140,15 +140,15 @@ export default async function handler(
       })
       .on("end", async () => {
         fs.unlinkSync(path);
-        let cleanedCompanyNames = await cleanCompanyNames(companyNames);
+        // let cleanedCompanyNames = await cleanCompanyNames(companyNames);
         // await saveCleanedCompanyNamesToRedis(email, cleanedCompanyNames);
 
-        let inc = 0;
-        for (const name of cleanedCompanyNames) {
-          dataArray[inc].company_name_cleaned = name;
-          dataArray[inc].flag = dataArray[inc].company_name === name ? 1 : 0;
-          inc++;
-        }
+        // let inc = 0;
+        // for (const name of cleanedCompanyNames) {
+        //   dataArray[inc].company_name_cleaned = name;
+        //   dataArray[inc].flag = dataArray[inc].company_name === name ? 1 : 0;
+        //   inc++;
+        // }
         const csv = await converter.json2csv(dataArray);
 
         const filePath = "cleanedFile.csv";
