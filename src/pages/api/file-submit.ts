@@ -294,12 +294,31 @@ export default async function handler(
 
       // Add a job to the Bull Queue for CSV processing
       const {email, paymentIntentId, name} = fData.fields;
-      csvQueue.add({
-        path: filePath,
-        email: email[0],
-        paymentIntentId: paymentIntentId[0],
-        name: name[0],
+      // csvQueue.add({
+      //   path: filePath,
+      //   email: email[0],
+      //   paymentIntentId: paymentIntentId[0],
+      //   name: name[0],
+      // });
+      try{
+      await resend.emails.send({
+        from: "company@resend.dev",
+        to: [email[0]],
+        subject: "List Clean1111",
+        html: "Below is cleaned list file",
+        headers: {
+          "X-Entity-Ref-ID": "123456789",
+        },
+        tags: [
+          {
+            name: "category",
+            value: "send_file",
+          },
+        ],
       });
+    } catch (error) {
+      console.log("error", error)
+    }
     } catch (error) {
       console.error("Error reading file:", error);
     }
