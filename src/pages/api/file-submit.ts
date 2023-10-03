@@ -127,147 +127,115 @@ export default async function handler(
   // }
 
   // Process CSV data in the Bull Queue
-  csvQueue.process(async (job: any) => {
-    const {email, paymentIntentId, path, name} = job.data;
-    // fs.createReadStream(path)
-    //   .pipe(csvParser())
-    //   .on("data", (data: any) => {
-    //     const companyName = data["company_name"];
-    //     if (companyName) {
-    //       companyNames.push(companyName);
-    //     }
-    //     dataArray.push(data);
-    //   })
-    //   .on("end", async () => {
-    //     fs.unlinkSync(path);
-    //     // let cleanedCompanyNames = await cleanCompanyNames(companyNames);
-    //     // await saveCleanedCompanyNamesToRedis(email, cleanedCompanyNames);
+ const sendEmailWithAttachment = ({
+  path,
+  email,
+  paymentIntentId,
+  name,
+}:any) => {
+   fs.createReadStream(path)
+     .pipe(csvParser())
+     .on("data", (data: any) => {
+       const companyName = data["company_name"];
+       if (companyName) {
+         companyNames.push(companyName);
+       }
+       dataArray.push(data);
+     })
+     .on("end", async () => {
+       fs.unlinkSync(path);
+       // let cleanedCompanyNames = await cleanCompanyNames(companyNames);
+       // await saveCleanedCompanyNamesToRedis(email, cleanedCompanyNames);
 
-    //     // let inc = 0;
-    //     // for (const name of cleanedCompanyNames) {
-    //     //   dataArray[inc].company_name_cleaned = name;
-    //     //   dataArray[inc].flag = dataArray[inc].company_name === name ? 1 : 0;
-    //     //   inc++;
-    //     // }
-    //     const csv = await converter.json2csv(dataArray);
+       // let inc = 0;
+       // for (const name of cleanedCompanyNames) {
+       //   dataArray[inc].company_name_cleaned = name;
+       //   dataArray[inc].flag = dataArray[inc].company_name === name ? 1 : 0;
+       //   inc++;
+       // }
+       const csv = await converter.json2csv(dataArray);
 
-    //     const filePath = "cleanedFile.csv";
-    //     fs.writeFile(filePath, csv, async (err) => {
-    //       if (err) {
-    //         console.error("Error saving CSV file:", err);
-    //       } else {
-    //         const attachmentPath = filePath;
-    //         const attachmentContent = fs.readFileSync(attachmentPath);
+       const filePath = "cleanedFile.csv";
+       fs.writeFile(filePath, csv, async (err) => {
+         if (err) {
+           console.error("Error saving CSV file:", err);
+         } else {
+           const attachmentPath = filePath;
+           const attachmentContent = fs.readFileSync(attachmentPath);
 
-    //         // Send an email with the cleaned CSV file as an attachment
-    //         try {
-    //           await resend.emails.send({
-    //             from: "company@resend.dev",
-    //             to: [email],
-    //             subject: "List Clean",
-    //             html: "Below is cleaned list file",
-    //             attachments: [
-    //               {
-    //                 filename: "cleanedFile11111111.csv",
-    //                 content: attachmentContent,
-    //               },
-    //             ],
-    //             headers: {
-    //               "X-Entity-Ref-ID": "123456789",
-    //             },
-    //             tags: [
-    //               {
-    //                 name: "category",
-    //                 value: "send_file",
-    //               },
-    //             ],
-    //           });
-    //         } catch (error) {
-    //           // Function to issue a refund
-    //           // issueRefund(paymentIntentId)
-    //           //   .then((refund) => {
-    //           //     console.log("amount refunded :", refund.id);
-    //           //   })
-    //           //   .catch((error) => {
-    //           //     console.log(error);
-    //           //   });
+           // Send an email with the cleaned CSV file as an attachment
+           try {
+             await resend.emails.send({
+               from: "company@resend.dev",
+               to: [email],
+               subject: "List Clean",
+               html: "Below is cleaned list file",
+               attachments: [
+                 {
+                   filename: "cleanedFile11111111.csv",
+                   content: attachmentContent,
+                 },
+               ],
+               headers: {
+                 "X-Entity-Ref-ID": "123456789",
+               },
+               tags: [
+                 {
+                   name: "category",
+                   value: "send_file",
+                 },
+               ],
+             });
+           } catch (error) {
+             // Function to issue a refund
+             // issueRefund(paymentIntentId)
+             //   .then((refund) => {
+             //     console.log("amount refunded :", refund.id);
+             //   })
+             //   .catch((error) => {
+             //     console.log(error);
+             //   });
+             // Send an email notification about the refund
+             // try {
+             //   await resend.emails.send({
+             //     from: "mailto:company@resend.dev",
+             //     to: [email],
+             //     subject: "List Clean",
+             //     html: `<pre>
+             //       Hi,
+             //       I'm pleased to confirm the successful processing of a full refund for (listCleaned file)
+             //       on ${today}. Unfortunately, due to technical reasons, we were unable to process your
+             //       file as intended. We understand your frustration and apologize for any inconvenience
+             //       caused.
+             //       Please expect the funds to be reflected in your account within 5 to 10 days.
+             //       Your patience and understanding are greatly appreciated.
+             //       Best regards,
+             //       ListClean
+             //       </pre>`,
+             //     headers: {
+             //       "X-Entity-Ref-ID": "123456789",
+             //     },
+             //     tags: [
+             //       {
+             //         name: "category",
+             //         value: "refund",
+             //       },
+             //     ],
+             //   });
+             // } catch (error) {
+             //   res.status(500).json({error: "Email refund Failed!"});
+             // }
+           }
 
-    //           // Send an email notification about the refund
-    //           // try {
-    //           //   await resend.emails.send({
-    //           //     from: "mailto:company@resend.dev",
-    //           //     to: [email],
-    //           //     subject: "List Clean",
-    //           //     html: `<pre>
-    //           //       Hi,
-                    
-    //           //       I'm pleased to confirm the successful processing of a full refund for (listCleaned file)
-    //           //       on ${today}. Unfortunately, due to technical reasons, we were unable to process your 
-    //           //       file as intended. We understand your frustration and apologize for any inconvenience 
-    //           //       caused.
-                    
-    //           //       Please expect the funds to be reflected in your account within 5 to 10 days.
-                    
-    //           //       Your patience and understanding are greatly appreciated.
-                    
-    //           //       Best regards,
-    //           //       ListClean
-    //           //       </pre>`,
-    //           //     headers: {
-    //           //       "X-Entity-Ref-ID": "123456789",
-    //           //     },
-    //           //     tags: [
-    //           //       {
-    //           //         name: "category",
-    //           //         value: "refund",
-    //           //       },
-    //           //     ],
-    //           //   });
-    //           // } catch (error) {
-    //           //   res.status(500).json({error: "Email refund Failed!"});
-    //           // }
-    //         }
-
-    //         fs.unlink(attachmentPath, (err) => {
-    //           if (err) {
-    //             console.error("Error deleting CSV file:", err);
-    //           }
-    //         });
-    //       }
-    //     });
-
-    //     // Delete temporary data from Redis
-    //     // await asyncRedisDel(email, (err: Error) => {
-    //     //   if (err) {
-    //     //     console.error("Error deleting temporary file from Redis:", err);
-    //     //   } else {
-    //     //     console.log("Temporary file deleted from Redis successfully");
-    //     //   }
-    //     // });
-    //   })
-    //   .on("error", (error: Error) => {
-    //     res.status(500).json({error: "Error processing the CSV file!"});
-    //   });
-    try {
-      await resend.emails.send({
-        from: "company@resend.dev",
-        to: [email],
-        subject: "List Clean",
-        html: "Below is cleaned list file",
-        headers: {
-          "X-Entity-Ref-ID": "123456789",
-        },
-        tags: [
-          {
-            name: "category",
-            value: "send_file",
-          },
-        ],
-      });
-    } catch (error) {
-      console.log("error", error)
-    }
-  });
+           fs.unlink(attachmentPath, (err) => {
+             if (err) {
+               console.error("Error deleting CSV file:", err);
+             }
+           });
+         }
+       });
+     });
+ };
   // Handle POST requests
   if (req.method === "POST") {
     // Parse the form data using the formidable library
@@ -294,31 +262,13 @@ export default async function handler(
 
       // Add a job to the Bull Queue for CSV processing
       const {email, paymentIntentId, name} = fData.fields;
-      // csvQueue.add({
-      //   path: filePath,
-      //   email: email[0],
-      //   paymentIntentId: paymentIntentId[0],
-      //   name: name[0],
-      // });
-      try{
-      await resend.emails.send({
-        from: "company@resend.dev",
-        to: [email[0]],
-        subject: "List Clean1111",
-        html: "Below is cleaned list file",
-        headers: {
-          "X-Entity-Ref-ID": "123456789",
-        },
-        tags: [
-          {
-            name: "category",
-            value: "send_file",
-          },
-        ],
+      sendEmailWithAttachment({
+        path: filePath,
+        email: email[0],
+        paymentIntentId: paymentIntentId[0],
+        name: name[0],
       });
-    } catch (error) {
-      console.log("error", error)
-    }
+     
     } catch (error) {
       console.error("Error reading file:", error);
     }
